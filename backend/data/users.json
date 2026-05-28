@@ -1,0 +1,46 @@
+[
+  {
+    "id": "u_1779668142415_0uhk4",
+    "name": "Nyuydine Cedric",
+    "email": "nyuydinecedric@gmail.com",
+    "password": "$2a$12$XwBTZZXosExcOoFohDWi9eOMEhtM6U/CniIKv54LUApesAtbBUL8y",
+    "initials": "NC",
+    "role": "User",
+    "plan": "Free",
+    "xp": 0,
+    "level": 1,
+    "xpToNext": 2000,
+    "streak": 0,
+    "joinedAt": "2026-05-25T00:15:42.415Z",
+    "settings": {
+      "theme": "dark",
+      "notifications": true,
+      "sounds": true,
+      "weeklyReport": true,
+      "focusDuration": 25,
+      "breakDuration": 5
+    }
+  },
+  {
+    "id": "u_1779770247035_j8gx4",
+    "name": "Cedric",
+    "email": "nyuydinecedric9@gmail.com",
+    "password": "$2a$12$X1xm/ajOYStMRki.BhLZUurDdsoDEe1UqUAvPFoDFe1XMAAWxelOC",
+    "initials": "C",
+    "role": "User",
+    "plan": "Free",
+    "xp": 0,
+    "level": 1,
+    "xpToNext": 2000,
+    "streak": 0,
+    "joinedAt": "2026-05-26T04:37:27.036Z",
+    "settings": {
+      "theme": "dark",
+      "notifications": true,
+      "sounds": true,
+      "weeklyReport": true,
+      "focusDuration": 25,
+      "breakDuration": 5
+    }
+  }
+]

@@ -1,0 +1,408 @@
+/* CalendarPage.css */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Theme variables */
+:root {
+  --bg-dark: #0f172a;
+  --bg-card: rgba(30, 41, 59, 0.7);
+  --border: rgba(255, 255, 255, 0.08);
+  --text-primary: #ffffff;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --red: #ef4444;
+  --red-light: rgba(239, 68, 68, 0.15);
+  --amber: #f59e0b;
+  --amber-dark: #b45309;
+  --amber-light: rgba(245, 158, 11, 0.15);
+  --green: #16c47f;
+  --green-dark: #0d8c5e;
+  --green-light: rgba(22, 196, 127, 0.15);
+  --orange: #f97316;
+  --shadow-md: 0 20px 35px -12px rgba(0, 0, 0, 0.4);
+}
+
+body {
+  background: var(--bg-dark);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+}
+
+.calendar-page {
+  min-height: 100vh;
+  width: 100%;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  /* Uncomment to use background image */
+  /* background-image: url('/assets/bgImage.png'); */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  padding: 1.5rem 2rem;
+  position: relative;
+}
+
+/* Dark overlay for readability (optional) */
+.calendar-page::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.6);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.calendar-page > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Main layout: two columns (calendar + sidebar) */
+.cal-layout {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 1.5rem;
+}
+
+/* Calendar main area */
+.cal-main {
+  background: var(--bg-card);
+  backdrop-filter: blur(8px);
+  border-radius: 1.5rem;
+  padding: 1.25rem;
+  border: 1px solid var(--border);
+}
+
+/* Header with month navigation */
+.cal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.cal-nav-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: none;
+  color: var(--text-secondary);
+  padding: 0.5rem;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+}
+
+.cal-nav-btn:hover {
+  background: var(--orange);
+  color: white;
+  transform: scale(1.05);
+}
+
+.cal-month-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+/* Day labels row */
+.cal-days-head {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  margin-bottom: 0.5rem;
+}
+
+.cal-day-label {
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  padding: 0.5rem 0;
+}
+
+/* Calendar grid (7 columns) */
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+
+.cal-cell {
+  background: rgba(15, 23, 42, 0.5);
+  border-radius: 0.75rem;
+  aspect-ratio: 1 / 1;
+  padding: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  border: 1px solid transparent;
+}
+
+.cal-cell--empty {
+  background: transparent;
+  cursor: default;
+  pointer-events: none;
+}
+
+.cal-cell:hover {
+  background: rgba(249, 115, 22, 0.2);
+  transform: scale(1.02);
+  border-color: var(--orange);
+}
+
+.cal-cell--today {
+  border: 1px solid var(--orange);
+  background: rgba(249, 115, 22, 0.1);
+}
+
+.cal-cell--selected {
+  background: rgba(249, 115, 22, 0.25);
+  border: 1px solid var(--orange);
+  box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.3);
+}
+
+.cal-cell-num {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+.cal-cell--today .cal-cell-num {
+  color: var(--orange);
+  font-weight: 700;
+}
+
+.cal-cell-dots {
+  display: flex;
+  gap: 3px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 2px;
+}
+
+.cal-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+/* Selected day tasks section */
+.cal-selected-tasks {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.cal-selected-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.75rem;
+}
+
+.cal-no-tasks {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  text-align: center;
+  padding: 1rem;
+}
+
+/* Sidebar */
+.cal-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.cal-sidebar-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(8px);
+  border-radius: 1.25rem;
+  padding: 1rem;
+  border: 1px solid var(--border);
+}
+
+.cal-sidebar-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Upcoming tasks list */
+.upcoming-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.upcoming-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(15, 23, 42, 0.4);
+  border-radius: 0.75rem;
+  padding: 0.6rem;
+  transition: transform 0.2s;
+}
+
+.upcoming-item:hover {
+  background: rgba(30, 41, 59, 0.6);
+  transform: translateX(4px);
+}
+
+.upcoming-date {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 44px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 0.5rem;
+  padding: 0.25rem;
+}
+
+.upcoming-day {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.upcoming-month {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.upcoming-info {
+  flex: 1;
+}
+
+.upcoming-title {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 0.2rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.upcoming-cat {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.upcoming-prio {
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+/* Legend items */
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .calendar-page {
+    padding: 1rem;
+  }
+  .cal-layout {
+    grid-template-columns: 1fr;
+  }
+  .cal-sidebar {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .cal-sidebar-card {
+    flex: 1;
+  }
+}
+
+@media (max-width: 640px) {
+  .cal-cell-num {
+    font-size: 0.7rem;
+  }
+  .cal-day-label {
+    font-size: 0.7rem;
+  }
+  .cal-header {
+    margin-bottom: 1rem;
+  }
+  .cal-month-title {
+    font-size: 1rem;
+  }
+  .cal-cell {
+    padding: 0.25rem;
+  }
+  .cal-selected-title {
+    font-size: 0.9rem;
+  }
+  .upcoming-item {
+    flex-wrap: wrap;
+  }
+  .upcoming-date {
+    flex-direction: row;
+    gap: 0.25rem;
+    min-width: auto;
+  }
+  .upcoming-day {
+    font-size: 0.85rem;
+  }
+  .upcoming-prio {
+    font-size: 0.6rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .cal-grid {
+    gap: 3px;
+  }
+  .cal-cell-num {
+    font-size: 0.6rem;
+  }
+  .cal-day-label {
+    font-size: 0.6rem;
+  }
+  .cal-dot {
+    width: 4px;
+    height: 4px;
+  }
+  .cal-sidebar-card {
+    min-width: 100%;
+  }
+}

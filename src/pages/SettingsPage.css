@@ -1,0 +1,419 @@
+/* SettingsPage.css – gold/green theme, glassmorphic */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --gold: #f97316;
+  --gold-dark: #f59e0b;
+  --green: #16c47f;
+  --green-dark: #0d8c5e;
+  --bg-dark: #0f172a;
+  --bg-card: rgba(30, 41, 59, 0.7);
+  --border: rgba(255, 255, 255, 0.08);
+  --text-primary: #ffffff;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --shadow-md: 0 20px 35px -12px rgba(0, 0, 0, 0.4);
+}
+
+body {
+  background: var(--bg-dark);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+}
+
+.settings-page {
+  min-height: 100vh;
+  width: 100%;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  padding: 1.5rem 2rem;
+  position: relative;
+}
+
+/* Optional overlay for background image */
+/* .settings-page::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.6);
+  z-index: 0;
+  pointer-events: none;
+}
+.settings-page > * {
+  position: relative;
+  z-index: 1;
+} */
+
+.settings-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+/* Card base */
+.settings-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(8px);
+  border-radius: 1.5rem;
+  padding: 1.2rem;
+  border: 1px solid var(--border);
+  margin-bottom: 1.2rem;
+  transition: transform 0.2s, background 0.2s;
+}
+
+.settings-card:hover {
+  background: rgba(30, 41, 59, 0.85);
+}
+
+.sc-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Setting rows (toggle switches) */
+.setting-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.setting-row:last-child {
+  border-bottom: none;
+}
+
+.setting-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+  flex: 1;
+}
+
+.setting-icon {
+  width: 32px;
+  height: 32px;
+  background: rgba(249, 115, 22, 0.15);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gold);
+}
+
+.setting-label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.setting-desc {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-top: 0.2rem;
+}
+
+/* Toggle button */
+.toggle-btn {
+  width: 44px;
+  height: 24px;
+  background: #334155;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.2s;
+}
+
+.toggle-btn::after {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: white;
+  border-radius: 50%;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.2s;
+}
+
+.toggle-btn--on {
+  background: var(--green);
+}
+
+.toggle-btn--on::after {
+  transform: translateX(20px);
+}
+
+/* Focus settings */
+.focus-settings-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.focus-setting-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.fs-label-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+
+.fs-label {
+  font-weight: 500;
+}
+
+.fs-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 999px;
+  padding: 0.2rem 0.5rem;
+}
+
+.fs-stepper {
+  background: transparent;
+  border: none;
+  color: var(--gold);
+  cursor: pointer;
+  padding: 0.2rem;
+  display: flex;
+  align-items: center;
+  border-radius: 999px;
+  transition: background 0.2s;
+}
+
+.fs-stepper:hover {
+  background: rgba(249, 115, 22, 0.2);
+}
+
+.fs-value {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  min-width: 30px;
+  text-align: center;
+}
+
+.fs-unit {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+/* Account rows */
+.account-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.account-row:last-of-type {
+  border-bottom: none;
+}
+
+.account-info {
+  display: flex;
+  gap: 0.8rem;
+  align-items: center;
+}
+
+.account-icon {
+  width: 32px;
+  height: 32px;
+  background: rgba(22, 196, 127, 0.15);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--green);
+}
+
+.account-label {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.account-value {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-top: 0.2rem;
+}
+
+.account-action-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  padding: 0.3rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.account-action-btn:hover {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: white;
+}
+
+.account-action-btn--sent {
+  background: var(--green);
+  border-color: var(--green);
+  color: white;
+}
+
+/* Sign out button */
+.signout-btn {
+  width: 100%;
+  margin-top: 1rem;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+  padding: 0.6rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.signout-btn:hover {
+  background: #ef4444;
+  border-color: #ef4444;
+  color: white;
+}
+
+/* Keyboard shortcuts */
+.shortcuts-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+}
+
+.shortcut-row {
+  flex: 1;
+  min-width: 130px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.25);
+  padding: 0.4rem 0.8rem;
+  border-radius: 0.75rem;
+}
+
+.shortcut-desc {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.shortcut-key {
+  background: rgba(0, 0, 0, 0.5);
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  font-family: monospace;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--gold);
+  border: 1px solid var(--border);
+}
+
+/* About section */
+.settings-about {
+  text-align: center;
+}
+
+.about-logo {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.about-name {
+  font-size: 1.2rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--gold), var(--green));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.about-version {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.about-desc {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  max-width: 250px;
+  margin: 0 auto;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .settings-page {
+    padding: 1rem;
+  }
+  .settings-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .setting-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.6rem;
+  }
+  .account-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.6rem;
+  }
+  .focus-setting-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .shortcuts-list {
+    flex-direction: column;
+  }
+}
