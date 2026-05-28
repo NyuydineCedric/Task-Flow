@@ -12,11 +12,17 @@ const app  = express()
 const PORT = process.env.PORT || 4000
 
 app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "https://task-flow-81vq7k0xb-nyuydinecedrics-projects.vercel.app",
-    "https://task-flow.vercel.app"
-  ],
+  origin: function(origin, callback) {
+    const allowed = [
+      "http://localhost:5173",
+      /\.vercel\.app$/
+    ];
+    if (!origin || allowed.some(o => typeof o === 'string' ? o === origin : o.test(origin))) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true
 }));
 
