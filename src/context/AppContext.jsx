@@ -1,7 +1,7 @@
 import { createContext, useContext, useReducer, useEffect } from "react";
 
 const AppContext = createContext(null);
-const API = import.meta.env.VITE_API_URL || "http://localhost:4000";
+const API = import.meta.env.VITE_API_URL || "http://localhost:4000/api";
 
 const defaultSettings = {
   theme: "light",
