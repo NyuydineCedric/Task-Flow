@@ -12,7 +12,13 @@ import { restoreQueueAfterRestart } from './services/schedulerService.js'
 const app  = express()
 const PORT = process.env.PORT || 4000
 
-app.use(cors({ origin: process.env.CLIENT_URL || 'http://localhost:5173', credentials: true }))
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "https://task-flow-81z432ye0-nyuydinecedrics-projects.vercel.app"
+  ],
+  credentials: true
+}));
 app.use(express.json())
 
 app.use('/api/auth',     authRouter)
@@ -31,11 +37,11 @@ app.use((err, req, res, next) => res.status(500).json({ error:'Internal server e
 
 app.listen(PORT, () => {
   const now = new Date().toLocaleString('en-US', { timeZone:'Africa/Douala' })
-  console.log(`\n🚀 TaskFlow Backend → http://localhost:${PORT}`)
-  console.log(`🌍 Timezone: Africa/Douala (WAT = UTC+1)`)
-  console.log(`🕐 Cameroon time: ${now}`)
-  console.log(`📧 Brevo ready`)
-  console.log(`💾 Data in backend/data/*.json\n`)
+  console.log(`\n TaskFlow Backend → http://localhost:${PORT}`)
+  console.log(`Timezone: Africa/Douala (WAT = UTC+1)`)
+  console.log(`Cameroon time: ${now}`)
+  console.log(` Brevo ready`)
+  console.log(` Data in backend/data/*.json\n`)
 
   // Restore any scheduled reminders that survived a restart
   restoreQueueAfterRestart()
