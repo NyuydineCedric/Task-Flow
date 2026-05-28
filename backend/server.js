@@ -1,5 +1,4 @@
 process.env.TZ = 'Africa/Douala'
-
 import express from 'express'
 import cors from 'cors'
 import 'dotenv/config'
@@ -15,12 +14,13 @@ const PORT = process.env.PORT || 4000
 app.use(cors({
   origin: [
     "http://localhost:5173",
-    "https://task-flow-81z432ye0-nyuydinecedrics-projects.vercel.app"
+    "https://task-flow-81vq7k0xb-nyuydinecedrics-projects.vercel.app",
+    "https://task-flow.vercel.app"
   ],
   credentials: true
 }));
-app.use(express.json())
 
+app.use(express.json())
 app.use('/api/auth',     authRouter)
 app.use('/api/tasks',    tasksRouter)
 app.use('/api/settings', settingsRouter)
@@ -42,7 +42,5 @@ app.listen(PORT, () => {
   console.log(`Cameroon time: ${now}`)
   console.log(` Brevo ready`)
   console.log(` Data in backend/data/*.json\n`)
-
-  // Restore any scheduled reminders that survived a restart
   restoreQueueAfterRestart()
 })
