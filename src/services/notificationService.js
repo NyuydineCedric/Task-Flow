@@ -12,11 +12,8 @@ class NotificationService {
       if (Notification.permission === 'granted') {
         this.permissionGranted = true
       }
-      // Do not request permission automatically on init (must be from a
-      // user gesture). Leave permission state as-is and provide a method
-      // `requestPermission` that UI can call from a click handler.
-      }
     }
+  }
 
   async requestPermission() {
     if (!('Notification' in window)) return false
@@ -34,7 +31,6 @@ class NotificationService {
       return false
     }
   }
-  }
 
   getToken() {
     return localStorage.getItem('tf_token')
@@ -43,7 +39,6 @@ class NotificationService {
   playSound() {
     const audio = new Audio('/sounds/notification.mp3')
     audio.volume = 0.8
-    console.log('🔊 Playing /sounds/notification.mp3')
     audio.play().catch(err => console.warn('Sound failed:', err.message))
   }
 
@@ -63,13 +58,7 @@ class NotificationService {
   }
 
   fireReminder(task, settings = {}) {
-    console.log(`🔔 fireReminder called: ${task.title}`)
-    console.log(`🔊 sounds:`, settings.sounds)
-
-    if (settings.sounds !== false) {
-      this.playSound()
-    }
-
+    if (settings.sounds !== false) this.playSound()
     if (settings.notifications !== false) {
       this.showBrowserNotification(
         `⏰ Reminder: ${task.title}`,
@@ -79,16 +68,13 @@ class NotificationService {
         { requireInteraction: task.priority === 'high', tag: task.id }
       )
     }
-
     window.dispatchEvent(new CustomEvent('taskflow:reminder', { detail: { task } }))
   }
 
   rescheduleAll(tasks, settings = {}) {
     this._frontendTimers.forEach(ids => ids.forEach(id => clearTimeout(id)))
     this._frontendTimers.clear()
-
     const eligible = tasks.filter(t => !t.done && t.due)
-    console.log(`⏰ Scheduling ${eligible.length} frontend timer(s)`)
     eligible.forEach(t => this._scheduleFrontendTimers(t, settings))
   }
 
@@ -111,7 +97,7 @@ class NotificationService {
     const token = this.getToken()
     if (!token) return
     try {
-      const res  = await fetch(`${API}/test`, {
+      const res = await fetch(`${API}/test`, {
         method:  'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -126,7 +112,6 @@ class NotificationService {
 
   _scheduleFrontendTimers(task, settings = {}) {
     this._cancelFrontendTimers(task.id)
-
     const dueTime = new Date(task.due).getTime()
     const now     = Date.now()
     if (isNaN(dueTime)) return
@@ -141,8 +126,6 @@ class NotificationService {
     slots.forEach(({ lead, label }) => {
       const delay = dueTime - lead - now
       if (delay < 0) return
-
-      console.log(`   ⏰ Timer: "${task.title}" ${label} in ${Math.round(delay/1000)}s`)
       const id = setTimeout(() => {
         this.fireReminder({ ...task, _reminderLabel: label }, settings)
       }, delay)
