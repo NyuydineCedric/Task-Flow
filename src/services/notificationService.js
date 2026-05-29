@@ -1,4 +1,4 @@
-const API = 'http://localhost:4000/api/email'
+const API = (import.meta.env.VITE_API_URL || 'http://localhost:4000/api') + '/email'
 
 class NotificationService {
   constructor() {
@@ -11,11 +11,29 @@ class NotificationService {
     if ('Notification' in window) {
       if (Notification.permission === 'granted') {
         this.permissionGranted = true
-      } else if (Notification.permission !== 'denied') {
-        const result = await Notification.requestPermission()
-        this.permissionGranted = result === 'granted'
+      }
+      // Do not request permission automatically on init (must be from a
+      // user gesture). Leave permission state as-is and provide a method
+      // `requestPermission` that UI can call from a click handler.
       }
     }
+
+  async requestPermission() {
+    if (!('Notification' in window)) return false
+    try {
+      if (Notification.permission === 'granted') {
+        this.permissionGranted = true
+        return true
+      }
+      if (Notification.permission === 'denied') return false
+      const result = await Notification.requestPermission()
+      this.permissionGranted = result === 'granted'
+      return this.permissionGranted
+    } catch (err) {
+      console.warn('Request permission failed:', err.message)
+      return false
+    }
+  }
   }
 
   getToken() {

@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Search, Bell, Plus, Moon, Sun, X, Mail } from "lucide-react";
 import { useApp } from "../../context/AppContext";
 import EmailLog from "../ui/EmailLog";
+import { notificationService } from "../../services/notificationService";
 import logo from "../../assets/logo.jpg";
 import "./Topbar.css";
 
@@ -77,7 +78,17 @@ export default function Topbar() {
         <div className="notif-wrap" ref={notifRef}>
           <button
             className="tb-icon-btn"
-            onClick={() => setNotifOpen(!notifOpen)}
+            onClick={async () => {
+              // Request notification permission from a user gesture (bell click)
+              try {
+                if (!notificationService.permissionGranted) {
+                  await notificationService.requestPermission();
+                }
+              } catch (e) {
+                console.warn("Permission request failed", e);
+              }
+              setNotifOpen(!notifOpen);
+            }}
             title="Notifications"
           >
             <Bell size={17} />
