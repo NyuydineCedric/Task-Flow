@@ -73,7 +73,7 @@ export default function SignupPage() {
     setLoading(true);
     await new Promise((r) => setTimeout(r, 700));
 
-    const result = signup({
+    const result = await signup({
       name: form.name.trim(),
       email: form.email.trim().toLowerCase(),
       password: form.password,
