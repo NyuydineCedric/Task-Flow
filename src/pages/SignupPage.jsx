@@ -110,7 +110,7 @@ export default function SignupPage() {
             alt="logo"
             style={{ width: "40px", borderRadius: "50%" }}
           />
-          <span className="signup-brand-name">TaskFlow</span>
+          <span className="signup-brand-name">TaskToDo</span>
         </div>
         <h2 className="signup-title">Create your account</h2>
         <p className="signup-subtitle">Free forever · No credit card needed</p>

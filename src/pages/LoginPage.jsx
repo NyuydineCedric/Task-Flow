@@ -67,7 +67,7 @@ export default function LoginPage() {
             alt="logo"
             style={{ width: "40px", borderRadius: "50%" }}
           />
-          <span className="login-brand-name">TaskFlow</span>
+          <span className="login-brand-name">TaskToDo</span>
         </div>
         <h2 className="login-title">Welcome back</h2>
         <p className="login-subtitle">Sign in to your workspace</p>

@@ -22,7 +22,7 @@ export default function LandingPage() {
               alt="logo"
               style={{ width: "50px", borderRadius: "50%" }}
             />
-            <span className="brand-name">TaskFlow</span>
+            <span className="brand-name">TaskToDo</span>
           </div>
           <div className="landing-actions-buttons">
             <button
