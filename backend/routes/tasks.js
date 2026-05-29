@@ -1,6 +1,7 @@
 import { Router } from 'express'
-import { getTasksByUser, saveTask, deleteTask as removeTask, getTaskById } from '../services/fileStore.js'
+import { getTasksByUser, saveTask, deleteTask as removeTask, getTaskById, getUserById } from '../services/fileStore.js'
 import { protect } from '../middleware/auth.js'
+import { scheduleReminder, cancelReminder } from '../services/schedulerService.js'
 
 const router = Router()
 router.use(protect)
@@ -33,6 +34,10 @@ router.post('/', (req, res) => {
       createdAt:   Date.now(),
     }
     saveTask(task)
+    if (task.due) {
+      const user = getUserById(req.user.id)
+      scheduleReminder(task, user.email)
+    }
     res.status(201).json({ task })
   } catch (err) {
     res.status(500).json({ error: err.message })
@@ -48,6 +53,12 @@ router.patch('/:id', (req, res) => {
     }
     const updated = { ...existing, ...req.body, id: existing.id, userId: existing.userId }
     saveTask(updated)
+    if (updated.due && !updated.done) {
+      const user = getUserById(req.user.id)
+      scheduleReminder(updated, user.email)
+    } else {
+      cancelReminder(updated.id)
+    }
     res.json({ task: updated })
   } catch (err) {
     res.status(500).json({ error: err.message })
@@ -62,6 +73,7 @@ router.delete('/:id', (req, res) => {
       return res.status(404).json({ error: 'Task not found' })
     }
     removeTask(req.params.id)
+    cancelReminder(req.params.id)
     res.json({ success: true })
   } catch (err) {
     res.status(500).json({ error: err.message })
@@ -77,6 +89,7 @@ router.patch('/:id/toggle', (req, res) => {
     }
     const updated = { ...existing, done: !existing.done, completedAt: !existing.done ? Date.now() : null }
     saveTask(updated)
+    if (updated.done) cancelReminder(updated.id)
     res.json({ task: updated })
   } catch (err) {
     res.status(500).json({ error: err.message })
