@@ -9,6 +9,8 @@ import ReminderPopup from "../components/ui/ReminderPopup";
 import { notificationService } from "../services/notificationService";
 import "./AppLayout.css";
 
+const API = import.meta.env.VITE_API_URL || "http://localhost:4000/api";
+
 const pageVariants = {
   initial: { opacity: 0, y: 14 },
   animate: {
@@ -22,69 +24,53 @@ const pageVariants = {
 export default function AppLayout() {
   const { activeModal, tasks, settings, user } = useApp();
   const location = useLocation();
-
   const settingsRef = useRef(settings);
   const tasksRef = useRef(tasks);
-  const syncedRef = useRef(false); // ✅ tracks whether we've done the initial sync
 
-  // Keep refs always up to date without triggering effects
   useEffect(() => {
     settingsRef.current = settings;
   }, [settings]);
-
   useEffect(() => {
     tasksRef.current = tasks;
   }, [tasks]);
 
-  // ✅ FIX: Only sync reminders when user.email changes (i.e. on login),
-  //    NOT on every tasks reload. Tasks are read via ref so they're always
-  //    fresh without being a reactive dependency that causes a loop.
+  // Reschedule frontend timers whenever tasks change
+  useEffect(() => {
+    if (!user?.email || !tasks?.length) return;
+    notificationService.rescheduleAll(tasks, {
+      get sounds() {
+        return settingsRef.current.sounds;
+      },
+      get notifications() {
+        return settingsRef.current.notifications;
+      },
+    });
+  }, [tasks, user?.email]);
+
+  // Sync backend reminders only on login
   useEffect(() => {
     if (!user?.email) return;
-
-    // Debounce: wait 500ms after user is set before syncing,
-    // so tasks have time to load first
     const timer = setTimeout(() => {
       const currentTasks = tasksRef.current;
       if (!currentTasks?.length) return;
-
-      console.log(`🔄 Syncing reminders for ${user.email}`);
-      console.log(`🔊 Sounds enabled: ${settingsRef.current.sounds}`);
-      console.log(
-        `🔔 Notifications enabled: ${settingsRef.current.notifications}`,
-      );
-
       const token = localStorage.getItem("tf_token");
-      if (token) {
-        fetch("http://localhost:4000/api/email/reschedule-all", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ tasks: currentTasks }),
-        })
-          .then((r) => r.json())
-          .then((d) => console.log("📅 Backend reminders scheduled:", d))
-          .catch((err) =>
-            console.warn("Backend reschedule failed:", err.message),
-          );
-      }
-
-      notificationService.rescheduleAll(currentTasks, {
-        get sounds() {
-          return settingsRef.current.sounds;
+      if (!token) return;
+      fetch(`${API}/email/reschedule-all`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-        get notifications() {
-          return settingsRef.current.notifications;
-        },
-      });
-
-      syncedRef.current = true;
+        body: JSON.stringify({ tasks: currentTasks }),
+      })
+        .then((r) => r.json())
+        .then((d) => console.log("📅 Backend reminders scheduled:", d))
+        .catch((err) =>
+          console.warn("Backend reschedule failed:", err.message),
+        );
     }, 500);
-
     return () => clearTimeout(timer);
-  }, [user?.email]); // ✅ only fires on login/logout, NOT on every task reload
+  }, [user?.email]);
 
   return (
     <div className="app-layout">
