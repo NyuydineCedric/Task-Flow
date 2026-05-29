@@ -26,30 +26,6 @@ const NOTIFS = [
     time: "2 min ago",
     read: false,
   },
-  {
-    id: "n2",
-    type: "reminder",
-    emoji: "⏰",
-    title: "Team standup in 30 minutes",
-    time: "Just now",
-    read: false,
-  },
-  {
-    id: "n3",
-    type: "achievement",
-    emoji: "🔥",
-    title: "7-day streak achieved!",
-    time: "1 hour ago",
-    read: true,
-  },
-  {
-    id: "n4",
-    type: "info",
-    emoji: "📧",
-    title: "Invoice #47 sent successfully",
-    time: "3 hours ago",
-    read: true,
-  },
 ];
 
 export default function Topbar() {
@@ -97,28 +73,6 @@ export default function Topbar() {
       </div>
 
       <div className="topbar-actions">
-        {/* Theme toggle */}
-        <button
-          className="tb-icon-btn"
-          onClick={() =>
-            updateSettings({
-              theme: settings.theme === "light" ? "dark" : "light",
-            })
-          }
-          title="Toggle theme"
-        >
-          {settings.theme === "light" ? <Moon size={17} /> : <Sun size={17} />}
-        </button>
-
-        {/* Email log */}
-        <button
-          className="tb-icon-btn"
-          onClick={() => setEmailLogOpen(true)}
-          title="Email notifications"
-        >
-          <Mail size={17} />
-        </button>
-
         {/* Bell notifications */}
         <div className="notif-wrap" ref={notifRef}>
           <button

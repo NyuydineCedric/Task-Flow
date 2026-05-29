@@ -1,16 +1,33 @@
+import { useEffect, Component } from "react";
 import { motion } from "framer-motion";
-import {
-  CheckSquare,
-  Clock,
-  TrendingUp,
-  Flame,
-  Plus,
-  ArrowRight,
-} from "lucide-react";
+import { CheckSquare, Clock, TrendingUp, Plus, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useApp } from "../context/AppContext";
 import TaskCard from "../components/tasks/TaskCard";
 import "./DashboardPage.css";
+
+// ✅ Error boundary to catch silent render crashes
+class ErrorBoundary extends Component {
+  state = { error: null };
+  static getDerivedStateFromError(error) {
+    return { error };
+  }
+  render() {
+    if (this.state.error) {
+      return (
+        <div style={{ padding: 32, color: "red" }}>
+          <h2>Dashboard crashed:</h2>
+          <pre style={{ whiteSpace: "pre-wrap" }}>
+            {this.state.error.message}
+            {"\n"}
+            {this.state.error.stack}
+          </pre>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 const stagger = { animate: { transition: { staggerChildren: 0.07 } } };
 const item = {
@@ -23,23 +40,37 @@ function greeting() {
   return h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening";
 }
 
-export default function DashboardPage() {
-  const { tasks, user, openModal } = useApp();
+function isOverdue(d) {
+  if (!d) return false;
+  return new Date(d) < new Date(new Date().toDateString());
+}
+
+function DashboardContent() {
+  const { tasks, user, openModal, loadTasks } = useApp();
   const navigate = useNavigate();
-  const done = tasks.filter((t) => t.done).length;
-  const pending = tasks.filter((t) => !t.done).length;
-  const overdue = tasks.filter((t) => !t.done && isOverdue(t.due)).length;
-  const score = tasks.length ? Math.round((done / tasks.length) * 100) : 0;
+
+  const tasksList = Array.isArray(tasks) ? tasks : [];
+
+  useEffect(() => {
+    loadTasks?.();
+  }, [loadTasks]);
+
+  const done = tasksList.filter((t) => t.done).length;
+  const pending = tasksList.filter((t) => !t.done).length;
+  const overdue = tasksList.filter((t) => !t.done && isOverdue(t.due)).length;
+  const score = tasksList.length
+    ? Math.round((done / tasksList.length) * 100)
+    : 0;
   const today = new Date().toLocaleDateString("en-US", {
     weekday: "long",
     month: "long",
     day: "numeric",
   });
-  const recentTasks = tasks.slice(0, 5);
+  const recentTasks = tasksList.slice(0, 5);
 
   const categories = ["Work", "Personal", "Study", "Health", "Finance"].map(
     (cat) => {
-      const ct = tasks.filter((t) => t.category === cat);
+      const ct = tasksList.filter((t) => t.category === cat);
       const cd = ct.filter((t) => t.done).length;
       return {
         cat,
@@ -72,7 +103,7 @@ export default function DashboardPage() {
       <motion.div className="dash-welcome" variants={item}>
         <div>
           <h1 className="dash-greeting">
-            {greeting()}, {user.name.split(" ")[0]}!
+            {greeting()}, {user?.name?.split(" ")[0] || "User"}!
           </h1>
           <p className="dash-date">
             {today} · {pending} task{pending !== 1 ? "s" : ""} pending
@@ -82,36 +113,6 @@ export default function DashboardPage() {
         <button className="dash-add-btn" onClick={() => openModal("add-task")}>
           <Plus size={15} /> New Task
         </button>
-      </motion.div>
-
-      {/* Insight banner */}
-      <motion.div className="dash-insight" variants={item}>
-        <div className="dash-insight-left">
-          <div className="dash-insight-emoji">🔥</div>
-          <div>
-            <div className="dash-insight-title">
-              {user.streak}-Day Streak Active!
-            </div>
-            <div className="dash-insight-body">
-              You're on fire. Complete today's {pending} tasks to keep it going.
-              Score: <strong>{score}%</strong>
-            </div>
-          </div>
-        </div>
-        <div className="dash-insight-right">
-          <div className="dash-xp-info">
-            <span>{user.xp.toLocaleString()} XP</span>
-            <span className="dash-xp-level">Lvl {user.level}</span>
-          </div>
-          <div className="xp-bar">
-            <div
-              className="xp-fill"
-              style={{
-                width: `${((user.xp % user.xpToNext) / user.xpToNext) * 100}%`,
-              }}
-            />
-          </div>
-        </div>
       </motion.div>
 
       {/* Stats */}
@@ -141,14 +142,6 @@ export default function DashboardPage() {
             color: "var(--purple)",
             bg: "#ede9fe",
           },
-          {
-            icon: Flame,
-            label: "Streak",
-            value: `${user.streak}d`,
-            trend: "🔥 Best!",
-            color: "var(--amber)",
-            bg: "var(--amber-light)",
-          },
         ].map((s) => (
           <motion.div key={s.label} className="stat-card" variants={item}>
             <div
@@ -175,8 +168,8 @@ export default function DashboardPage() {
             </button>
           </div>
           <div className="task-list">
-            {recentTasks.map((t, i) => (
-              <TaskCard key={t.id} task={t} index={i} />
+            {recentTasks.map((t) => (
+              <TaskCard key={t.id} task={t} />
             ))}
           </div>
         </motion.div>
@@ -240,7 +233,10 @@ export default function DashboardPage() {
   );
 }
 
-function isOverdue(d) {
-  if (!d) return false;
-  return new Date(d) < new Date(new Date().toDateString());
+export default function DashboardPage() {
+  return (
+    <ErrorBoundary>
+      <DashboardContent />
+    </ErrorBoundary>
+  );
 }

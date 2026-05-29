@@ -4,12 +4,8 @@ import {
   LayoutDashboard,
   CheckSquare,
   CalendarDays,
-  BarChart3,
-  Timer,
-  User,
   Settings,
   ChevronLeft,
-  Flame,
 } from "lucide-react";
 import { useApp } from "../../context/AppContext";
 import "./Sidebar.css";
@@ -19,13 +15,8 @@ const NAV = [
   { path: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
   { path: "/tasks", icon: CheckSquare, label: "Tasks", badge: true },
   { path: "/calendar", icon: CalendarDays, label: "Calendar" },
-  { path: "/analytics", icon: BarChart3, label: "Analytics" },
-  { path: "/focus", icon: Timer, label: "Focus Mode" },
 ];
-const BOTTOM_NAV = [
-  { path: "/profile", icon: User, label: "Profile" },
-  { path: "/settings", icon: Settings, label: "Settings" },
-];
+const BOTTOM_NAV = [{ path: "/settings", icon: Settings, label: "Settings" }];
 
 export default function Sidebar() {
   const { sidebarCollapsed, toggleSidebar, tasks, user } = useApp();
@@ -55,7 +46,7 @@ export default function Sidebar() {
               exit={{ opacity: 0, width: 0 }}
               transition={{ duration: 0.2 }}
             >
-              TaskFlow
+              TaskToDo
             </motion.span>
           )}
         </AnimatePresence>
@@ -156,10 +147,6 @@ export default function Sidebar() {
                 transition={{ duration: 0.2 }}
               >
                 <span className="sb-user-name">{user.name}</span>
-                <span className="sb-user-meta">
-                  <Flame size={10} /> {user.streak}d ·{" "}
-                  {user.xp.toLocaleString()} XP
-                </span>
               </motion.div>
             )}
           </AnimatePresence>

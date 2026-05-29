@@ -1,73 +1,4 @@
-.dashboard { display: flex; flex-direction: column; gap: 20px; max-width: 1200px; }
-
-.dash-welcome { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
-.dash-greeting { font-size: 24px; font-weight: 800; margin-bottom: 3px; }
-.dash-date { color: var(--text3); font-size: 13px; }
-.dash-add-btn { display: flex; align-items: center; gap: 6px; padding: 9px 18px; background: var(--green); color: #fff; border-radius: var(--r-sm); font-size: 13.5px; font-weight: 500; white-space: nowrap; transition: all var(--t); flex-shrink: 0; }
-.dash-add-btn:hover { background: var(--green-dark); box-shadow: var(--shadow-green); transform: translateY(-1px); }
-
-.dash-insight {
-  background: linear-gradient(135deg, #0F172A 0%, #1a2744 100%);
-  border-radius: var(--r-lg);
-  padding: 20px 24px;
-  display: flex; align-items: center; justify-content: space-between; gap: 20px;
-  position: relative; overflow: hidden;
-}
-.dash-insight::before {
-  content: '';
-  position: absolute; inset: 0;
-  background: radial-gradient(ellipse at 15% 50%, rgba(22,196,127,0.12), transparent 60%);
-  pointer-events: none;
-}
-.dash-insight-left { display: flex; align-items: center; gap: 14px; }
-.dash-insight-emoji { font-size: 30px; }
-.dash-insight-title { font-family: var(--font-head); font-weight: 700; color: #fff; font-size: 15px; margin-bottom: 3px; }
-.dash-insight-body { font-size: 13px; color: rgba(255,255,255,0.55); }
-.dash-insight-body strong { color: var(--green); }
-.dash-insight-right { min-width: 160px; flex-shrink: 0; }
-.dash-xp-info { display: flex; justify-content: space-between; margin-bottom: 7px; }
-.dash-xp-info span { font-size: 12px; color: rgba(255,255,255,0.6); font-weight: 500; }
-.dash-xp-level { color: var(--green) !important; font-weight: 700 !important; }
-.xp-bar { height: 7px; background: rgba(255,255,255,0.1); border-radius: 99px; overflow: hidden; }
-.xp-fill { height: 100%; background: linear-gradient(90deg, var(--green), var(--blue)); border-radius: 99px; transition: width 0.8s ease; }
-
-.dash-stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
-.stat-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--r-md); padding: 18px; box-shadow: var(--shadow-sm); transition: transform var(--t-fast), box-shadow var(--t); }
-.stat-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
-.stat-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
-.stat-value { font-family: var(--font-head); font-size: 28px; font-weight: 800; line-height: 1; margin-bottom: 3px; }
-.stat-label { font-size: 12px; color: var(--text3); font-weight: 500; margin-bottom: 5px; }
-.stat-trend { font-size: 11.5px; color: var(--green); font-weight: 500; }
-
-.dash-grid { display: grid; grid-template-columns: 1fr 360px; gap: 20px; }
-
-.section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-.section-title { font-size: 15px; font-weight: 700; }
-.section-link { display: flex; align-items: center; gap: 4px; font-size: 12.5px; color: var(--green); font-weight: 500; transition: gap var(--t); cursor: pointer; }
-.section-link:hover { gap: 7px; }
-
-.task-list { display: flex; flex-direction: column; gap: 8px; }
-
-.dash-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--r-md); padding: 18px; box-shadow: var(--shadow-sm); }
-.dash-card-title { font-size: 14px; font-weight: 700; margin-bottom: 14px; }
-
-.cat-row { margin-bottom: 12px; }
-.cat-row-top { display: flex; justify-content: space-between; margin-bottom: 5px; }
-.cat-name { font-size: 13px; font-weight: 500; }
-.cat-pct { font-size: 11.5px; color: var(--text3); }
-.prog-track { height: 6px; background: var(--bg3); border-radius: 99px; overflow: hidden; }
-.prog-fill { height: 100%; background: var(--green); border-radius: 99px; }
-
-.mini-chart { display: flex; gap: 6px; align-items: flex-end; height: 100px; padding-top: 8px; }
-.mini-bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
-.mini-bar-val { font-size: 10px; font-weight: 600; color: var(--text2); }
-.mini-bar { width: 100%; background: var(--green); border-radius: 4px 4px 0 0; opacity: 0.75; transition: opacity var(--t); min-height: 4px; cursor: pointer; }
-.mini-bar:hover { opacity: 1; }
-.mini-bar-day { font-size: 10px; color: var(--text3); font-weight: 500; }
-
-@media (max-width: 1100px) { .dash-grid { grid-template-columns: 1fr; } }
-@media (max-width: 900px) { .dash-stats { grid-template-columns: repeat(2,1fr); } }
-@media (max-width: 500px) { .dash-stats { grid-template-columns: 1fr 1fr; } .dash-insight { flex-direction: column; } .dash-insight-right { width: 100%; } }* {
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -82,27 +13,26 @@ body {
 
 /* Dashboard container */
 .dashboard {
-  min-height: 100vh;
   width: 100%;
+  /* ✅ FIX: removed min-height: 100vh — was overflowing the parent container
+     and getting clipped by overflow: hidden on .app-main */
   background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-  /* If you want a background image on dashboard as well, uncomment and adjust path */
-  /* background-image: url('/assets/bgImage.png'); */
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
   position: relative;
   padding: 1.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 /* Optional dark overlay for dashboard (semi-transparent) */
 .dashboard::before {
   content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  position: absolute;
+  inset: 0;
   background: rgba(15, 23, 42, 0.6);
   z-index: 0;
   pointer-events: none;
@@ -284,7 +214,7 @@ body {
   margin-top: 0.4rem;
 }
 
-/* Two‑column grid */
+/* Two-column grid */
 .dash-grid {
   display: grid;
   grid-template-columns: 1fr 320px;
@@ -411,6 +341,10 @@ body {
   border-radius: 4px 4px 0 0;
   min-height: 2px;
   transition: height 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.mini-bar:hover {
+  opacity: 1;
 }
 
 .mini-bar-day {

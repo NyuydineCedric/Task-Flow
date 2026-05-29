@@ -4,9 +4,7 @@ import AppLayout from "./layouts/AppLayout";
 import DashboardPage from "./pages/DashboardPage";
 import TasksPage from "./pages/TasksPage";
 import CalendarPage from "./pages/CalendarPage";
-import AnalyticsPage from "./pages/AnalyticsPage";
-import FocusPage from "./pages/FocusPage";
-import ProfilePage from "./pages/ProfilePage";
+
 import SettingsPage from "./pages/SettingsPage";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
@@ -74,9 +72,7 @@ function AppRoutes() {
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/tasks" element={<TasksPage />} />
         <Route path="/calendar" element={<CalendarPage />} />
-        <Route path="/analytics" element={<AnalyticsPage />} />
-        <Route path="/focus" element={<FocusPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
+
         <Route path="/settings" element={<SettingsPage />} />
       </Route>
 

@@ -1,10 +1,16 @@
-import { createContext, useContext, useReducer, useEffect } from "react";
+import {
+  createContext,
+  useContext,
+  useReducer,
+  useEffect,
+  useCallback,
+} from "react";
 
 const AppContext = createContext(null);
 const API = import.meta.env.VITE_API_URL || "http://localhost:4000/api";
 
 const defaultSettings = {
-  theme: "light",
+  theme: "dark",
   notifications: true,
   sounds: true,
   weeklyReport: true,
@@ -102,29 +108,28 @@ export function AppProvider({ children }) {
   useEffect(() => {
     document.documentElement.setAttribute(
       "data-theme",
-      state.settings?.theme || "light",
+      state.settings?.theme || "dark",
     );
   }, [state.settings?.theme]);
 
-  // Load tasks + settings when authenticated
-  useEffect(() => {
-    if (state.isAuthenticated && getToken()) {
-      loadTasks();
-      loadSettings();
-    }
-  }, [state.isAuthenticated]);
-
-  async function loadTasks() {
+  // ✅ FIX: Stable function reference with useCallback so consumers can
+  //    safely include it in useEffect dependency arrays without causing
+  //    infinite loops or stale closures.
+  const loadTasks = useCallback(async () => {
     try {
-      const res = await fetch(`${API}/tasks`, { headers: authHeaders() });
+      console.log("[loadTasks] fetching tasks...");
+      const res = await fetch(`${API}/tasks?_=${Date.now()}`, {
+        // ✅ timestamp busts browser cache
+        headers: authHeaders(),
+      });
       const data = await res.json();
       if (res.ok) dispatch({ type: "SET_TASKS", payload: data.tasks });
     } catch (err) {
       console.error("Load tasks failed:", err);
     }
-  }
+  }, []); // API, authHeaders, and dispatch are all stable — no deps needed
 
-  async function loadSettings() {
+  const loadSettings = useCallback(async () => {
     try {
       const res = await fetch(`${API}/settings`, { headers: authHeaders() });
       const data = await res.json();
@@ -132,7 +137,26 @@ export function AppProvider({ children }) {
     } catch (err) {
       console.error("Load settings failed:", err);
     }
-  }
+  }, []);
+
+  // Load tasks + settings when authenticated
+  useEffect(() => {
+    if (state.isAuthenticated && getToken()) {
+      loadTasks();
+      loadSettings();
+    }
+  }, [state.isAuthenticated, loadTasks, loadSettings]);
+
+  // Reload tasks when window gets focus (navigating back to tab)
+  useEffect(() => {
+    function onFocus() {
+      if (state.isAuthenticated && getToken()) {
+        loadTasks();
+      }
+    }
+    window.addEventListener("focus", onFocus);
+    return () => window.removeEventListener("focus", onFocus);
+  }, [state.isAuthenticated, loadTasks]);
 
   // ---- Auth ----
   async function signup({ name, email, password }) {
@@ -166,7 +190,6 @@ export function AppProvider({ children }) {
       localStorage.setItem("tf_token", data.token);
       localStorage.setItem("tf_user", JSON.stringify(data.user));
 
-      // Load tasks for this user
       const tasksRes = await fetch(`${API}/tasks`, {
         headers: { Authorization: `Bearer ${data.token}` },
       });
@@ -291,6 +314,7 @@ export function AppProvider({ children }) {
         updateSettings,
         setSearch,
         updateUser,
+        loadTasks,
       }}
     >
       {children}

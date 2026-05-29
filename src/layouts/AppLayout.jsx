@@ -22,50 +22,69 @@ const pageVariants = {
 export default function AppLayout() {
   const { activeModal, tasks, settings, user } = useApp();
   const location = useLocation();
-  const settingsRef = useRef(settings);
 
-  // Keep settingsRef always up to date
-  // This ensures timers always use the latest settings
+  const settingsRef = useRef(settings);
+  const tasksRef = useRef(tasks);
+  const syncedRef = useRef(false); // ✅ tracks whether we've done the initial sync
+
+  // Keep refs always up to date without triggering effects
   useEffect(() => {
     settingsRef.current = settings;
   }, [settings]);
 
-  // Schedule reminders whenever tasks or user changes
   useEffect(() => {
-    if (!user?.email || !tasks?.length) return;
+    tasksRef.current = tasks;
+  }, [tasks]);
 
-    console.log(`🔄 Syncing reminders for ${user.email}`);
-    console.log(`🔊 Sounds enabled: ${settings.sounds}`);
-    console.log(`🔔 Notifications enabled: ${settings.notifications}`);
+  // ✅ FIX: Only sync reminders when user.email changes (i.e. on login),
+  //    NOT on every tasks reload. Tasks are read via ref so they're always
+  //    fresh without being a reactive dependency that causes a loop.
+  useEffect(() => {
+    if (!user?.email) return;
 
-    // Tell backend to schedule email reminders
-    const token = localStorage.getItem("tf_token");
-    if (token) {
-      fetch("http://localhost:4000/api/email/reschedule-all", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+    // Debounce: wait 500ms after user is set before syncing,
+    // so tasks have time to load first
+    const timer = setTimeout(() => {
+      const currentTasks = tasksRef.current;
+      if (!currentTasks?.length) return;
+
+      console.log(`🔄 Syncing reminders for ${user.email}`);
+      console.log(`🔊 Sounds enabled: ${settingsRef.current.sounds}`);
+      console.log(
+        `🔔 Notifications enabled: ${settingsRef.current.notifications}`,
+      );
+
+      const token = localStorage.getItem("tf_token");
+      if (token) {
+        fetch("http://localhost:4000/api/email/reschedule-all", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ tasks: currentTasks }),
+        })
+          .then((r) => r.json())
+          .then((d) => console.log("📅 Backend reminders scheduled:", d))
+          .catch((err) =>
+            console.warn("Backend reschedule failed:", err.message),
+          );
+      }
+
+      notificationService.rescheduleAll(currentTasks, {
+        get sounds() {
+          return settingsRef.current.sounds;
         },
-        body: JSON.stringify({ tasks }),
-      })
-        .then((r) => r.json())
-        .then((d) => console.log("📅 Backend reminders scheduled:", d))
-        .catch((err) =>
-          console.warn("Backend reschedule failed:", err.message),
-        );
-    }
+        get notifications() {
+          return settingsRef.current.notifications;
+        },
+      });
 
-    // Pass a getter function so timers always use latest settings
-    notificationService.rescheduleAll(tasks, {
-      get sounds() {
-        return settingsRef.current.sounds;
-      },
-      get notifications() {
-        return settingsRef.current.notifications;
-      },
-    });
-  }, [tasks, user?.email]);
+      syncedRef.current = true;
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [user?.email]); // ✅ only fires on login/logout, NOT on every task reload
 
   return (
     <div className="app-layout">
@@ -73,27 +92,23 @@ export default function AppLayout() {
       <div className="app-body">
         <Topbar />
         <main className="app-main">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={location.pathname}
-              variants={pageVariants}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              className="page-wrapper"
-            >
-              <Outlet />
-            </motion.div>
-          </AnimatePresence>
+          <motion.div
+            key={location.pathname}
+            variants={pageVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            className="page-wrapper"
+          >
+            <Outlet />
+          </motion.div>
         </main>
       </div>
-
       <AnimatePresence>
         {(activeModal === "add-task" || activeModal === "edit-task") && (
           <TaskModal />
         )}
       </AnimatePresence>
-
       <ReminderPopup />
     </div>
   );
