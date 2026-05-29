@@ -50,3 +50,16 @@ app.listen(PORT, () => {
   console.log(` Data in backend/data/*.json\n`)
   restoreQueueAfterRestart()
 })
+
+
+// Keep Render awake (free tier spins down after 15min inactivity)
+if (process.env.NODE_ENV !== 'development') {
+  const RENDER_URL = process.env.RENDER_URL
+  if (RENDER_URL) {
+    setInterval(() => {
+      fetch(`${RENDER_URL}/health`)
+        .then(() => console.log('💓 Keep-alive ping sent'))
+        .catch(err => console.error('Keep-alive failed:', err.message))
+    }, 14 * 60 * 1000) // every 14 minutes
+  }
+}
