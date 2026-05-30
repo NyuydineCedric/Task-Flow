@@ -7,13 +7,24 @@ class NotificationService {
     this.init()
   }
 
-  async init() {
-    if ('Notification' in window) {
-      if (Notification.permission === 'granted') {
-        this.permissionGranted = true
-      }
+async init() {
+  if ('Notification' in window) {
+    if (Notification.permission === 'granted') {
+      this.permissionGranted = true
     }
   }
+  // Unlock audio context on first user interaction
+  const unlock = () => {
+    const audio = new Audio('/sounds/notification.mp3')
+    audio.volume = 0
+    audio.play().then(() => {
+      audio.pause()
+      audio.currentTime = 0
+    }).catch(() => {})
+    document.removeEventListener('click', unlock)
+  }
+  document.addEventListener('click', unlock)
+}
 
   async requestPermission() {
     if (!('Notification' in window)) return false
