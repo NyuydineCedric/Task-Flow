@@ -1,3 +1,4 @@
+/* ===== TOPBAR – BASE (desktop) ===== */
 .topbar {
   height: var(--topbar-h);
   background: var(--card);
@@ -19,6 +20,7 @@
   margin-right: 4px;
 }
 
+/* Search – desktop */
 .topbar-search {
   flex: 1;
   max-width: 340px;
@@ -62,6 +64,7 @@
 }
 .search-clear:hover { color: var(--text); }
 
+/* Actions */
 .topbar-actions {
   display: flex;
   align-items: center;
@@ -82,8 +85,8 @@
 }
 .tb-icon-btn:hover { background: var(--bg2); color: var(--text); }
 
+/* Notifications */
 .notif-wrap { position: relative; }
-
 .notif-dot {
   position: absolute;
   top: 5px;
@@ -121,7 +124,6 @@
   padding: 14px 16px;
   border-bottom: 1px solid var(--border);
 }
-
 .notif-header-title { font-size: 13px; font-weight: 600; }
 .notif-mark-read { font-size: 11px; color: var(--green); cursor: pointer; }
 .notif-mark-read:hover { text-decoration: underline; }
@@ -145,6 +147,7 @@
 .notif-time { font-size: 11px; color: var(--text3); margin-top: 2px; }
 .notif-unread-dot { width: 7px; height: 7px; background: var(--green); border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
 
+/* Add task button */
 .tb-add-btn {
   display: flex;
   align-items: center;
@@ -161,6 +164,7 @@
 .tb-add-btn:hover { background: var(--green-dark); box-shadow: var(--shadow-green); transform: translateY(-1px); }
 .tb-add-btn:active { transform: translateY(0); }
 
+/* Avatar */
 .tb-avatar {
   width: 34px;
   height: 34px;
@@ -176,8 +180,112 @@
   flex-shrink: 0;
 }
 
-@media (max-width: 640px) {
-  .topbar-search { display: none; }
-  .topbar-title { font-size: 16px; }
-  .tb-add-btn span { display: none; }
+/* ===== RESPONSIVE (≤768px) ===== */
+@media (max-width: 768px) {
+  .topbar {
+    padding: 0 16px;
+    gap: 8px;
+  }
+
+  /* Show mobile menu button (you need to add .mobile-menu-btn in JSX) */
+  .mobile-menu-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: var(--r-sm);
+    background: transparent;
+    border: none;
+    color: var(--text2);
+    cursor: pointer;
+  }
+  .mobile-menu-btn:hover {
+    background: var(--bg2);
+    color: var(--text);
+  }
+
+  /* Search becomes a click‑to‑expand overlay */
+  .topbar-search {
+    max-width: none;
+    position: fixed;
+    top: var(--topbar-h);
+    left: 0;
+    right: 0;
+    background: var(--card);
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    transform: translateY(-120%);
+    transition: transform 0.2s ease;
+    z-index: 45;
+  }
+  .topbar-search--open {
+    transform: translateY(0);
+  }
+  /* Hide search by default on mobile, show only when search icon is clicked */
+  .topbar .topbar-search {
+    display: none;
+  }
+  /* Alternative: if you want a search icon that toggles the full‑width search */
+  .search-toggle {
+    display: flex;
+  }
+
+  /* Adjust title */
+  .topbar-title {
+    font-size: 16px;
+    margin-right: 0;
+  }
+
+  /* Add task button: hide text on small screens */
+  .tb-add-btn span {
+    display: none;
+  }
+  .tb-add-btn {
+    padding: 8px 12px;
+    gap: 0;
+  }
+
+  /* Avatar slightly smaller */
+  .tb-avatar {
+    width: 32px;
+    height: 32px;
+    font-size: 11px;
+  }
+
+  /* Notification panel on mobile: full width near top */
+  .notif-panel {
+    position: fixed;
+    top: var(--topbar-h);
+    right: 0;
+    left: 0;
+    width: auto;
+    max-width: 100%;
+    border-radius: 0 0 var(--r-lg) var(--r-lg);
+    border-top: none;
+    margin-top: 0;
+  }
+}
+
+/* For very small screens (≤480px) */
+@media (max-width: 480px) {
+  .topbar-title {
+    font-size: 14px;
+  }
+  .tb-icon-btn {
+    width: 32px;
+    height: 32px;
+  }
+  .tb-avatar {
+    width: 28px;
+    height: 28px;
+    font-size: 10px;
+  }
+  .notif-dot {
+    width: 14px;
+    height: 14px;
+    font-size: 8px;
+    top: 3px;
+    right: 3px;
+  }
 }
