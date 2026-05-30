@@ -158,3 +158,25 @@
 .sb-user-info { overflow: hidden; display: flex; flex-direction: column; gap: 1px; }
 .sb-user-name { font-size: 13px; font-weight: 500; color: #fff; white-space: nowrap; }
 .sb-user-meta { font-size: 11px; color: rgba(255,255,255,0.38); white-space: nowrap; display: flex; align-items: center; gap: 3px; }
+
+
+
+/* Mobile: sidebar becomes a slide-in drawer */
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    z-index: 100;
+    width: 248px !important;
+  }
+  .sidebar--mobile-open {
+    transform: translateX(0);
+  }
+  .sb-toggle {
+    display: none;
+  }
+}

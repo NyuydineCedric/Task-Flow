@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Bell, Plus, Moon, Sun, X, Mail } from "lucide-react";
+import { Search, Bell, Plus, X } from "lucide-react";
 import { useApp } from "../../context/AppContext";
 import EmailLog from "../ui/EmailLog";
 import { notificationService } from "../../services/notificationService";
@@ -30,8 +30,7 @@ const NOTIFS = [
 ];
 
 export default function Topbar() {
-  const { searchQuery, setSearch, openModal, settings, updateSettings } =
-    useApp();
+  const { searchQuery, setSearch, openModal } = useApp();
   const [notifOpen, setNotifOpen] = useState(false);
   const [emailLogOpen, setEmailLogOpen] = useState(false);
   const [notifications, setNotifications] = useState(NOTIFS);
